@@ -1,15 +1,18 @@
 import {
   Card,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
+  Stack,
   Typography,
 } from '@mui/material';
 import { useQuestionsStore } from './store/questions';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import SyntaxTheme from 'react-syntax-highlighter/dist/esm/styles/hljs/gradient-dark';
 import { type Question as QuestionType } from './types';
+import Footer from './Footer';
 
 type QuestionProp = {
   info: QuestionType;
@@ -41,7 +44,11 @@ const Question: React.FC<QuestionProp> = ({ info }) => {
         marginTop: 4,
       }}>
       <Typography variant='h5'>{info.question}</Typography>
-      <SyntaxHighlighter language='javascript' style={SyntaxTheme}>
+      <SyntaxHighlighter
+        language='javascript'
+        style={SyntaxTheme}
+        wrapLines={true}
+        wrapLongLines={true}>
         {info.code}
       </SyntaxHighlighter>
       <List sx={{ bgcolor: '#333' }} disablePadding>
@@ -65,12 +72,36 @@ const Question: React.FC<QuestionProp> = ({ info }) => {
 const Game = () => {
   const questions = useQuestionsStore((state) => state.questions);
   const currentQuestion = useQuestionsStore((state) => state.currentQuestion);
+  const goNextQuestion = useQuestionsStore((state) => state.goNextQuestion);
+  const goPreviousQuestion = useQuestionsStore(
+    (state) => state.goPreviousQuestion
+  );
 
   const questionInfo = questions[currentQuestion];
 
   return (
     <>
+      <Stack
+        direction='row'
+        gap={2}
+        alignItems={'center'}
+        justifyContent={'center'}>
+        <IconButton
+          onClick={goPreviousQuestion}
+          disabled={currentQuestion === 0}>
+          {'<'}
+        </IconButton>
+        <Typography variant='h5' component='h2'>
+          {currentQuestion + 1} / {questions.length}
+        </Typography>
+        <IconButton
+          onClick={goNextQuestion}
+          disabled={currentQuestion === questions.length - 1}>
+          {'>'}
+        </IconButton>
+      </Stack>
       <Question info={questionInfo} />
+      <Footer />
     </>
   );
 };
