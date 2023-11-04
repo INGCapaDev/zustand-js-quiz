@@ -9,6 +9,7 @@ type State = {
   selectAnswer: (questionID: number, answerIndex: number) => void;
   goNextQuestion: () => void;
   goPreviousQuestion: () => void;
+  reset: () => void;
 };
 
 const initialState: Pick<State, 'questions' | 'currentQuestion'> = {
@@ -67,6 +68,10 @@ export const useQuestionsStore = create<State>((set, get) => {
       if (previousQuestion >= 0) {
         set({ currentQuestion: previousQuestion });
       }
+    },
+
+    reset: () => {
+      set({ ...initialState });
     },
   };
 });
